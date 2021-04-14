@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "node server.js",      
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -19,9 +19,7 @@
     "@angular/platform-browser": "~11.1.1",
     "@angular/platform-browser-dynamic": "~11.1.1",
     "@angular/router": "~11.1.1",
-    "@angular/service-worker": "~11.1.1",
     "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -31,7 +29,6 @@
     "path": "^0.12.7",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "web-push": "^3.4.4",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {

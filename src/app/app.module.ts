@@ -16,8 +16,7 @@ import { ToastrModule} from 'ngx-toastr';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ReactiveFormsModule} from '@angular/forms';
 import { PasswordresetComponent } from './passwordreset/passwordreset.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { NavbarComponent } from './navbar/navbar.component';
 
 
 @NgModule({
@@ -28,7 +27,8 @@ import { environment } from '../environments/environment';
     NotesComponent,
     SearchPipe,
     HomeComponent,
-    PasswordresetComponent
+    PasswordresetComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -42,13 +42,7 @@ import { environment } from '../environments/environment';
       positionClass:'toast-top-center',
       closeButton:true
     }),
-    BrowserAnimationsModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the app is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    })
+    BrowserAnimationsModule
   ],
   providers: [
     {

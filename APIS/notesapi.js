@@ -10,8 +10,8 @@ notesApiObj.post("/addnote",verifyToken, async(req,res)=>{
     
     let userObj = req.body;
 
-    let success = await notesCollectionObj.insertOne(userObj)
-    res.send({message:"notes created"})
+    let success = await notesCollectionObj.insertOne(userObj);
+    res.send({message:"notes created"});
 })
 
 
@@ -51,11 +51,29 @@ notesApiObj.put("/update", async(req,res)=>{
 
     let success = await notesCollectionObj.updateOne({id:notesObj.id},{$set:{
         title:notesObj.title,
-        note : notesObj.note
+        note : notesObj.note,
+        time : notesObj.time
     }})
 
     res.send({message:"success"});
 })
+
+
+notesApiObj.get("/getreminder/:time",verifyToken,async(req,res)=>{
+    let notesCollectionObj=req.app.get("notesCollectionObj");
+    
+    console.log(req.params.time)
+
+    let remind = await notesCollectionObj.find({time:{$eq:req.params.time}}).toArray();
+    console.log(remind)
+    if(remind.length != 0)
+    {
+        res.send({message:remind});
+    }
+   
+  
+})
+
 
 
 

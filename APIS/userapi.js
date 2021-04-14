@@ -1,6 +1,7 @@
-const exp=require("express")
+
+const exp=require("express");
 const userApiObj=exp.Router();
-userApiObj.use(exp.json())
+userApiObj.use(exp.json());
 const bcryptjs=require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -11,20 +12,20 @@ require("dotenv").config();
 userApiObj.post("/register",async(req,res)=>{
     let userCollectionObj=req.app.get("userCollectionObj");
     
-    let userObj = req.body
+    let userObj = req.body;
    
   
-    let user= await userCollectionObj.findOne({username:userObj.username})
+    let user= await userCollectionObj.findOne({username:userObj.username});
     if(user!==null)
     {
-        res.send({message:"user already exists"})
+        res.send({message:"user already exists"});
     }
     else{
 
-        let hpw= await bcryptjs.hash(userObj.password,6)
+        let hpw= await bcryptjs.hash(userObj.password,6);
         userObj.password=hpw;
-        let success=await userCollectionObj.insertOne(userObj)
-        res.send({message:"user created"})
+        let success=await userCollectionObj.insertOne(userObj);
+        res.send({message:"user created"});
     }
 })
 
@@ -46,35 +47,35 @@ userApiObj.post("/login",async(req,res)=>{
     let userCollectionObj=req.app.get("userCollectionObj");
     let userCredObj= req.body;
 
-    let user = await userCollectionObj.findOne({username:userCredObj.username})
+    let user = await userCollectionObj.findOne({username:userCredObj.username});
 
     if(user==null){
-        res.send({message:"Invalid username"})
+        res.send({message:"Invalid username"});
     }
     else{
 
-        let status=await bcryptjs.compare(userCredObj.password,user.password)
+        let status=await bcryptjs.compare(userCredObj.password,user.password);
 
         if(status==true)
         {
-            let token = await jwt.sign({username:user.username},process.env.secret,{expiresIn:100})
-            res.send({message:"success",signedToken:token,username:user.username})
+            let token = await jwt.sign({username:user.username},process.env.secret,{expiresIn:100});
+            res.send({message:"success",signedToken:token,username:user.username});
         }
         else{
-            res.send({message:"invalid password"})
+            res.send({message:"invalid password"});
         }
     }
 })
 
 
 userApiObj.post("/passwordreset",async(req,res,next)=>{
-    let userCollectionObject=req.app.get("userCollectionObj")
+    let userCollectionObject=req.app.get("userCollectionObj");
     let obj=req.body;
-    let hash=await bcryptjs.hash(obj.password1,6)
+    let hash=await bcryptjs.hash(obj.password1,6);
     let success=await userCollectionObject.updateOne({username:obj.username},{$set:{
         password:hash}
     })
-    res.send({message:"success"})
+    res.send({message:"success"});
 })
 
 

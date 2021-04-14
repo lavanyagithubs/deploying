@@ -37,7 +37,10 @@ export class UserService {
   changePassword(obj){
     return this.hc.post("/user/passwordreset",obj)
   }
-  postsubscription(sub:PushSubscription){
-    return this.hc.post("/rem/sub",sub).pipe()
+
+  
+  getReminder(time:string):Observable<any>{
+    return this.hc.get("/notes/getreminder/"+time)
   }
+
 }

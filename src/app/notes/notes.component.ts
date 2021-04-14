@@ -1,6 +1,8 @@
+import { ArrayType } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { timer } from 'rxjs';
 import { UserService } from '../user.service';
 
 @Component({
@@ -17,8 +19,11 @@ export class NotesComponent implements OnInit {
   notes;
   id1;
   session = true;
-  swpush;
-  update = {title:"" , note : " ",id:""}
+  remind:any;
+  time;
+  time1;
+
+  update = {title:"" , note : " ",id:"", time:" "}
   constructor(private us:UserService , private ru:Router , private ts:ToastrService) { }
 
   ngOnInit(): void {
@@ -26,21 +31,23 @@ export class NotesComponent implements OnInit {
    this.username = localStorage.getItem("username")
    this.onCall()
    this.onDelete;
+   //this.timer();
   }
   
 
   onSubmit(value){
     this.userObj1 = value.value;
     this.username = localStorage.getItem("username");
-    this.userObj1.username=this.username
+    this.userObj1.username=this.username;
     this.userObj1.id=Date.now().toString();
     this.us.createNotes(this.userObj1).subscribe(
       res => {
         if(res["message"]=="notes created")
         {
          
-          this.onCall()
-          this.ts.success('notes created successfully')
+          this.onCall();
+          this.ts.success('notes created successfully');
+          value.reset();
         }
         else if(res["message"]=="session expired..plz relogin to continue")
         {
@@ -85,12 +92,12 @@ export class NotesComponent implements OnInit {
        
           if(res["message"]=="success")
           {
-            this.onCall()
-            this.ts.warning('notes deleted')
+            this.onCall();
+            this.ts.warning('notes deleted');
           }
           else if(res["message"]=="session expired..plz relogin to continue")
           {
-            this.session=!this.session
+            this.session=!this.session;
             this.ts.warning(res["message"]);
             this.ru.navigateByUrl("/login");
           }
@@ -107,8 +114,9 @@ export class NotesComponent implements OnInit {
     {
       console.log(v);
       this.update.title= v.title;
-      this.update.note = v.note;
-      this.update.id = v.id;
+      this.update.note = v.note;   
+     this.update.time=v.time;
+     this.update.id = v.id;
     }
 
     save()
@@ -118,12 +126,12 @@ export class NotesComponent implements OnInit {
         res=>{
           if(res["message"]=="success")
           {
-             this.onCall()
-             this.ts.info('notes updated')
+             this.onCall();
+             this.ts.info('notes updated');
           }
           else if(res["message"]=="session expired..plz relogin to continue")
           {
-            this.session=!this.session
+            this.session=!this.session;
             this.ts.warning(res["message"]);
             this.ru.navigateByUrl("/login");
           }
@@ -139,19 +147,45 @@ export class NotesComponent implements OnInit {
     {
       localStorage.clear();
       this.username = localStorage.getItem("username");
-      this.ts.success('user logged out successfully')
+      this.ts.success('user logged out successfully');
       this.ru.navigateByUrl("/login");
     }
-    sendSub(){
-      if(this.swpush.isEnabled){
-        this.swpush.requestSubscription({
-          serverPublicKey:'BEvbLxOBvw5R8186WKA1juNrl6I-MLKR3cYOB51QGcFJiX9aWJfEb5CTT7FILn1RUUmXZ85cj5Opl9Nw1Xe_A2M  9Nw1Xe_A2M'
-        })
-        .then(sub=>{
-          this.us.postsubscription(sub).subscribe()
-        })
+
+   
+  timer(){  
+    setInterval(()=>{
+      this.onTimeOut();
+    },10000)
       }
-    }
+
+  onTimeOut(){
+    console.log("this calls for every 1 minutes")
+    var x=new Date();
+    this.remind= x.getHours() + ":" + x.getMinutes()
+   
+    this.reminder();
+    //this.timer();
+  
+   }
+      
+   reminder(){
+    this.time=this.remind;
+    console.log("time is",this.time);
+    this.us.getReminder(this.time).subscribe(
+      res=>{
+        if(res["message"])
+        {
+          console.log(res["message"]);
+          console.log("time has found");
+          this.ts.warning('reminded');
+            
+        }
+      },
+      err=> console.log("something went wrong")
+    )
+  
+  }
+
 
 }
-
+interface Response { message: string;}
